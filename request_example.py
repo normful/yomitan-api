@@ -1,7 +1,12 @@
 import requests
+import os
+import json
 
 request_url = "http://127.0.0.1:19633"
 request_timeout = 10
+
+request_output_dir = os.path.join(os.path.os.path.dirname(__file__), "request_example_results")
+os.makedirs(request_output_dir, exist_ok = True)
 
 def elide(text: str) -> str:
     elide_max_length = 100
@@ -9,11 +14,16 @@ def elide(text: str) -> str:
         return text[:100] + "..."
     return text
 
+def dump_json(filename, json_dict) -> None:
+    with open(os.path.join(request_output_dir, filename) + ".json", "w", encoding = "utf8") as output_json:
+        json.dump(json_dict, output_json, indent = 4, ensure_ascii = False)
+
 def yomitan_version() -> None:
     print("Requesting yomitanVersion:")
     response = requests.post(request_url + "/yomitanVersion", timeout = request_timeout)
     print(response)
     print(response.text)
+    dump_json("yomitanVersion", response.json())
 
 def term_entries() -> None:
     print("Requesting termEntries:")
@@ -23,6 +33,7 @@ def term_entries() -> None:
     response = requests.post(request_url + "/termEntries", json = params, timeout = request_timeout)
     print(response)
     print(elide(response.text))
+    dump_json("termEntries", response.json())
 
 def kanji_entries() -> None:
     print("Requesting kanjiEntries:")
@@ -32,6 +43,7 @@ def kanji_entries() -> None:
     response = requests.post(request_url + "/kanjiEntries", json = params, timeout = request_timeout)
     print(response)
     print(elide(response.text))
+    dump_json("kanjiEntries", response.json())
 
 def anki_fields_term() -> None:
     print("Requesting ankiFields type term:")
@@ -45,6 +57,7 @@ def anki_fields_term() -> None:
     response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout)
     print(response)
     print(elide(response.text))
+    dump_json("ankiFields_term", response.json())
 
 def anki_fields_kanji() -> None:
     print("Requesting ankiFields type kanji:")
@@ -58,6 +71,7 @@ def anki_fields_kanji() -> None:
     response = requests.post(request_url + "/ankiFields", json = params, timeout = request_timeout)
     print(response)
     print(elide(response.text))
+    dump_json("ankiFields_kanji", response.json())
 
 def tokenize() -> None:
     print("Requesting tokenize:")
