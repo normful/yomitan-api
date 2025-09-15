@@ -1,6 +1,7 @@
-import requests
-import os
 import json
+import os
+
+import requests
 
 request_url = "http://127.0.0.1:19633"
 request_timeout = 10
@@ -14,7 +15,7 @@ def elide(text: str) -> str:
         return text[:100] + "..."
     return text
 
-def dump_json(filename, json_dict) -> None:
+def dump_json(filename: str, json_dict: dict) -> None:
     with open(os.path.join(request_output_dir, filename) + ".json", "w", encoding = "utf8") as output_json:
         json.dump(json_dict, output_json, indent = 4, ensure_ascii = False)
 
@@ -82,6 +83,7 @@ def tokenize() -> None:
     response = requests.post(request_url + "/tokenize", json = params, timeout = request_timeout)
     print(response)
     print(elide(response.text))
+    dump_json("tokenize", response.json())
 
 print("Yomitan API request example demo")
 print("Only the first 100 characters of the result data for each request will be printed")
