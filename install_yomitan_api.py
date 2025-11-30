@@ -42,7 +42,15 @@ BROWSER_DATA = {
 
 PLATFORM_DATA = {
     "linux": {
-        "platform_aliases": ["linux", "linux2", "riscos", "freebsd7", "freebsd8", "freebsdN", "openbsd6"],
+        "platform_aliases": [
+            "linux",
+            "linux2",
+            "riscos",
+            "freebsd7",
+            "freebsd8",
+            "freebsdN",
+            "openbsd6",
+        ],
         "manifest_install_data": {
             "firefox": {
                 "methods": ["file"],
@@ -50,7 +58,9 @@ PLATFORM_DATA = {
             },
             "chrome": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/.config/google-chrome/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/.config/google-chrome/NativeMessagingHosts/"
+                ),
             },
             "chromium": {
                 "methods": ["file"],
@@ -58,7 +68,9 @@ PLATFORM_DATA = {
             },
             "brave": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/"
+                ),
             },
         },
     },
@@ -96,23 +108,32 @@ PLATFORM_DATA = {
         "manifest_install_data": {
             "firefox": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/Library/Application Support/Mozilla/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/Library/Application Support/Mozilla/NativeMessagingHosts/"
+                ),
             },
             "chrome": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/Library/Application Support/Google/Chrome/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/Library/Application Support/Google/Chrome/NativeMessagingHosts/"
+                ),
             },
             "chromium": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/Library/Application Support/Chromium/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/Library/Application Support/Chromium/NativeMessagingHosts/"
+                ),
             },
             "brave": {
                 "methods": ["file"],
-                "path": os.path.expanduser("~/Library/Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts/"),
+                "path": os.path.expanduser(
+                    "~/Library/Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts/"
+                ),
             },
         },
     },
 }
+
 
 def platform_data_get() -> dict:
     for platform_name in PLATFORM_DATA:
@@ -123,6 +144,7 @@ def platform_data_get() -> dict:
     msg = f"Unsupported platform: {sys.platform}"
     raise Exception(msg)  # noqa: TRY002
 
+
 def manifest_get(browser: dict, messaging_host_path: str, additional_ids: list) -> str:
     manifest = copy.deepcopy(MANIFEST_TEMPLATE)
     data = BROWSER_DATA[browser]
@@ -132,10 +154,12 @@ def manifest_get(browser: dict, messaging_host_path: str, additional_ids: list) 
         manifest[data["extension_id_key"]].append(extension_id)
     return json.dumps(manifest, indent=4)
 
+
 def manifest_install_file(manifest: str, path: str) -> None:
-    os.makedirs(path, exist_ok = True)
+    os.makedirs(path, exist_ok=True)
     with open(os.path.join(path, NAME + ".json"), "w") as f:
         f.write(manifest)
+
 
 platform_data = platform_data_get()
 
@@ -167,7 +191,9 @@ if platform_data["platform"] == "mac":
     script_path = os.path.join(manifest_install_data["path"], "yomitan_api.py")
     try:
         shutil.copy(os.path.join(DIR, "yomitan_api.py"), script_path)
-        print(f'File copied from {os.path.join(DIR, "yomitan_api.py")} to {script_path}')
+        print(
+            f"File copied from {os.path.join(DIR, 'yomitan_api.py')} to {script_path}"
+        )
     except FileNotFoundError:
         print("File not found.")
     except PermissionError:
@@ -181,7 +207,20 @@ for method in manifest_install_data["methods"]:
     if method == "registry":
         import winreg
 
-        winreg.CreateKey(winreg.HKEY_CURRENT_USER, manifest_install_data["registry_path"])
-        registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, manifest_install_data["registry_path"], 0, winreg.KEY_WRITE)
-        winreg.SetValueEx(registry_key, "", 0, winreg.REG_SZ, os.path.join(manifest_install_data["path"], NAME + ".json"))
+        winreg.CreateKey(
+            winreg.HKEY_CURRENT_USER, manifest_install_data["registry_path"]
+        )
+        registry_key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            manifest_install_data["registry_path"],
+            0,
+            winreg.KEY_WRITE,
+        )
+        winreg.SetValueEx(
+            registry_key,
+            "",
+            0,
+            winreg.REG_SZ,
+            os.path.join(manifest_install_data["path"], NAME + ".json"),
+        )
         winreg.CloseKey(registry_key)
