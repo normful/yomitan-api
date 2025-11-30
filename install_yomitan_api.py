@@ -38,6 +38,10 @@ BROWSER_DATA = {
         "extension_id_key": "allowed_origins",
         "extension_ids": ["chrome-extension://likgccmbimhjbgkjambclfkhldnlhbnn/"],
     },
+    "vivaldi": {
+        "extension_id_key": "allowed_origins",
+        "extension_ids": ["chrome-extension://likgccmbimhjbgkjambclfkhldnlhbnn/"],
+    },
 }
 
 PLATFORM_DATA = {
@@ -128,6 +132,12 @@ PLATFORM_DATA = {
                 "methods": ["file"],
                 "path": os.path.expanduser(
                     "~/Library/Application Support/BraveSoftware/Brave-Browser/NativeMessagingHosts/"
+                ),
+            },
+            "vivaldi": {
+                "methods": ["file"],
+                "path": os.path.expanduser(
+                    "~/Library/Application Support/Vivaldi/NativeMessagingHosts/"
                 ),
             },
         },
